@@ -20,6 +20,7 @@ public class AccessingArray : MonoBehaviour
 
                 local t = array:ToTable()                
                 
+                -- #t: table.getn(t) 获取表的大小 --
                 for i = 1, #t do
                     print('table: '.. tostring(t[i]))
                 end
@@ -64,7 +65,7 @@ public class AccessingArray : MonoBehaviour
         Debugger.Log("return is {0} {1} {2}", arg1, arg2, arg3);
         func.EndPCall();
 
-        //调用通用函数需要转换一下类型，避免可变参数拆成多个参数传递
+        //  调用通用函数需要转换一下类型，避免可变参数拆成多个参数传递
         object[] objs = func.LazyCall((object)array);
 
         if (objs != null)

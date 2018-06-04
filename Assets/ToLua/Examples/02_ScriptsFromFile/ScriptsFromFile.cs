@@ -36,21 +36,21 @@ public class ScriptsFromFile : MonoBehaviour
 
         GUI.Label(new Rect(100, Screen.height / 2 - 100, 600, 400), strLog);
 
-        //  DoFile: 每次调用都会重新加载和执行
+        //  DoFile: 需要扩展名, 可反复执行, 后面的变量会覆盖之前DoFile加载的变量. 不推荐
         if (GUI.Button(new Rect(50, 50, 120, 45), "DoFile"))
         {
             strLog = "";
             lua.DoFile("ScriptsFromFile.lua");
         }
 
-        //  Require: 只执行一次，不重复加载
+        //  Require: 不需要扩展名，只执行一次，不重复加载. 推荐
         else if (GUI.Button(new Rect(50, 150, 120, 45), "Require"))
         {
             strLog = "";            
-            lua.Require("ScriptsFromFile");     //  推荐方案       
+            lua.Require("ScriptsFromFile");   
         }
 
-        lua.Collect();
+        lua.Collect();  //  垃圾回收
         lua.CheckTop();
     }
 

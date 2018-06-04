@@ -31,12 +31,12 @@ public class CallLuaFunction : MonoBehaviour
         DelegateFactory.Init();        
         lua.DoString(script);
 
-        //Get the function object
+        //  获取并缓存一个lua函数，支持串式操作，如："test.luaFunc", 表示test表中的luaFunc函数
         luaFunc = lua.GetFunction("test.luaFunc");
 
         if (luaFunc != null)
         {
-            //  generic call
+            //  LuaFunction.Invoke(): 有一个返回值的调用
             int num = luaFunc.Invoke<int, int>(123456);
             Debugger.Log("generic call return: {0}", num);
 
@@ -49,7 +49,7 @@ public class CallLuaFunction : MonoBehaviour
             num = Func(123456);
             Debugger.Log("Delegate call return: {0}", num);
             
-            //  luastate call
+            //  LuaState.Invoke(): 临时调用一个luaFunction并返回一个值，此操作不缓存luaFunction, 适合使用频率低的函数调用
             num = lua.Invoke<int, int>("test.luaFunc", 123456, true);
             Debugger.Log("luastate call return: {0}", num);
         }
@@ -72,12 +72,14 @@ public class CallLuaFunction : MonoBehaviour
 
     void OnDestroy()
     {
+        //  释放LuaFunction
         if (luaFunc != null)
         {
             luaFunc.Dispose();
             luaFunc = null;
         }
 
+        //  释放LuaState
         lua.Dispose();
         lua = null;
 
@@ -90,11 +92,11 @@ public class CallLuaFunction : MonoBehaviour
 
     int CallFunc()
     {
-        luaFunc.BeginPCall();
-        luaFunc.Push(123456);
-        luaFunc.PCall();
-        int num = (int)luaFunc.CheckNumber();
-        luaFunc.EndPCall();
+        luaFunc.BeginPCall();   //  开始函数调用
+        luaFunc.Push(123456);   //  压入所需参数
+        luaFunc.PCall();        //  调用
+        int num = (int)luaFunc.CheckNumber();   //  数据类型保护
+        luaFunc.EndPCall();     //  结束函数调用
         return num;                
     }
 }
